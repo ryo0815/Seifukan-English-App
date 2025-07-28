@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { analyzePhonemeLevel } from '@/lib/phoneme-analysis'
 
 // Azure Speech Service configuration with validation
 const AZURE_SPEECH_KEY = process.env.AZURE_SPEECH_KEY || ''
@@ -22,6 +23,7 @@ interface PronunciationAssessmentResult {
   feedback: string
   error?: string
   azureData?: any
+  detailedAnalysis?: any
 }
 
 export async function POST(request: NextRequest) {
@@ -381,6 +383,9 @@ function processPronunciationAssessmentResponse(
       ? `Azure発音評価スコア: ${finalPronScore}/100。${improvements.length > 0 ? improvements.join(' ') : '素晴らしい発音です！'}`
       : `Azure音声認識結果: "${recognizedText}". 音素レベル分析による評価。`
 
+    // カタカナ検出の詳細分析を実行
+    const detailedAnalysis = analyzePhonemeLevel(recognizedText, referenceText, data)
+
     return {
       overallGrade,
       gradeDescription: getGradeDescription(overallGrade),
@@ -392,7 +397,8 @@ function processPronunciationAssessmentResponse(
       improvements,
       positives,
       feedback,
-      azureData: data
+      azureData: data,
+      detailedAnalysis
     }
   } catch (error) {
     console.error('=== ERROR PROCESSING PRONUNCIATION ASSESSMENT ===')
@@ -422,6 +428,11 @@ function createResultFromSpeechToText(
   const improvements = score < 70 ? ['発音の正確性を向上させてください'] : []
   const positives = score >= 70 ? ['認識できる発音でした'] : []
   
+  const feedback = `音声認識結果: "${recognizedText}". 基本的な文字比較による評価。`
+
+  // カタカナ検出の詳細分析を実行
+  const detailedAnalysis = analyzePhonemeLevel(recognizedText, referenceText, undefined)
+
   return {
     overallGrade: grade,
     gradeDescription: getGradeDescription(grade),
@@ -432,7 +443,8 @@ function createResultFromSpeechToText(
     recognizedText,
     improvements,
     positives,
-    feedback: `音声認識結果: "${recognizedText}". 簡易評価スコア: ${score}/100`
+    feedback,
+    detailedAnalysis
   }
 }
 

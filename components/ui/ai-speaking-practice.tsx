@@ -605,6 +605,89 @@ export function AISpeakingPractice({
                 </ul>
               </div>
             )}
+
+            {/* 改善ポイントブロック */}
+            <div className="bg-blue-50 rounded-xl p-3 border border-blue-200">
+              <h3 className="text-sm font-bold text-blue-800 mb-2 text-center">
+                改善ポイント
+              </h3>
+              <div className="space-y-2">
+                {/* 発音に沿ったアドバイス（3つ） */}
+                {comparisonData.improvements && comparisonData.improvements.length > 0 ? (
+                  comparisonData.improvements.slice(0, 3).map((improvement: string, index: number) => (
+                    <div key={index} className="flex items-start space-x-2">
+                      <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
+                        {index + 1}
+                      </div>
+                      <p className="text-sm text-blue-800 font-medium leading-relaxed">
+                        {improvement}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  // フォールバック用のデフォルト改善ポイント
+                  <>
+                    <div className="flex items-start space-x-2">
+                      <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">1</div>
+                      <p className="text-sm text-blue-800 font-medium">お手本音声をもう一度聞いてみましょう</p>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">2</div>
+                      <p className="text-sm text-blue-800 font-medium">一つ一つの音を意識して発音してみましょう</p>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">3</div>
+                      <p className="text-sm text-blue-800 font-medium">口の形と舌の位置に注意してみましょう</p>
+                    </div>
+                  </>
+                )}
+                
+                {/* カタカナ発音の度合いに応じたアドバイス（2つ） */}
+                {comparisonData.detailedAnalysis && (
+                  <>
+                    {comparisonData.detailedAnalysis.katakanaDetection?.detected && !['A'].includes(comparisonData.overallGrade) ? (
+                      // カタカナ発音が検出された場合
+                      <>
+                        <div className="flex items-start space-x-2">
+                          <div className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">4</div>
+                          <p className="text-sm text-red-800 font-medium">
+                            {comparisonData.detailedAnalysis.katakanaDetection.confidence > 0.7 
+                              ? 'カタカナ発音が強く検出されています。ネイティブ発音を意識して練習してください'
+                              : 'カタカナ発音が検出されています。英語の音素を正確に発音するよう心がけてください'
+                            }
+                          </p>
+                        </div>
+                        <div className="flex items-start space-x-2">
+                          <div className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">5</div>
+                          <p className="text-sm text-red-800 font-medium">
+                            {comparisonData.detailedAnalysis.katakanaDetection.confidence > 0.7
+                              ? 'リズムとイントネーションを自然にし、英語らしい発音を目指してください'
+                              : 'お手本音声のリズムとイントネーションを参考に練習してください'
+                            }
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      // カタカナ発音が検出されない場合の追加アドバイス（2つ）
+                      <>
+                        <div className="flex items-start space-x-2">
+                          <div className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">4</div>
+                          <p className="text-sm text-green-800 font-medium">
+                            リズムとイントネーションを自然にしてください
+                          </p>
+                        </div>
+                        <div className="flex items-start space-x-2">
+                          <div className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">5</div>
+                          <p className="text-sm text-green-800 font-medium">
+                            良い発音です。さらに練習しましょう
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
             
             {/* Action Buttons */}
             {showRetryButton && (
