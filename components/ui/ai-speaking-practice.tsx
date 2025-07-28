@@ -18,6 +18,7 @@ import {
   Bug,
   Info
 } from "lucide-react"
+import { motion } from 'framer-motion'
 
 interface AzureSpeakingEvaluation {
   overallGrade: 'A' | 'B' | 'C' | 'D' | 'E'
@@ -391,70 +392,79 @@ export function AISpeakingPractice({
 
   return (
     <div className="space-y-6">
-      {/* Recording Controls */}
-      <div className="text-center space-y-4">
-        {/* Example Audio Button */}
+      {/* Enhanced Recording Controls */}
+      <div className="text-center space-y-6">
+        {/* Enhanced Example Audio Button */}
         <div className="flex justify-center">
           <Button
             onClick={playExampleAudio}
             disabled={isPlayingExample}
             variant="outline"
-            size="sm"
-            className="border-green-300 text-green-600 hover:bg-green-50"
+            size="lg"
+            className="border-green-300 text-green-600 hover:bg-green-50 px-8"
           >
-            <Volume2 className="w-4 h-4 mr-2" />
+            <Volume2 className="w-5 h-5 mr-3" />
             {isPlayingExample ? 'お手本を再生中...' : 'お手本を聞く'}
           </Button>
         </div>
 
         {!hasRecorded ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex justify-center">
-              <Button
-                onClick={isRecording ? stopRecording : startRecording}
-                size="lg"
-                className={`${
-                  isRecording 
-                    ? 'bg-red-500 hover:bg-red-600' 
-                    : 'bg-green-500 hover:bg-green-600'
-                } rounded-full w-20 h-20 shadow-lg`}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {isRecording ? <Square className="w-10 h-10" /> : <Mic className="w-10 h-10" />}
-              </Button>
+                <Button
+                  onClick={isRecording ? stopRecording : startRecording}
+                  size="lg"
+                  className={`${
+                    isRecording 
+                      ? 'bg-red-500 hover:bg-red-600' 
+                      : 'bg-green-500 hover:bg-green-600'
+                  } rounded-full w-24 h-24 shadow-xl`}
+                >
+                  {isRecording ? <Square className="w-12 h-12" /> : <Mic className="w-12 h-12" />}
+                </Button>
+              </motion.div>
             </div>
 
             {isRecording && (
-              <div className="space-y-2">
-                <div className="text-red-600 font-medium">録音中...</div>
-                <div className="text-sm text-gray-600">
+              <motion.div 
+                className="space-y-3"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div className="text-red-600 font-medium text-lg">録音中...</div>
+                <div className="text-2xl font-bold text-gray-800">
                   {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
                 </div>
-              </div>
+              </motion.div>
             )}
             
-            <p className="text-sm text-gray-600">
+            <p className="text-gray-600 text-lg">
               マイクボタンを押して録音開始
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex justify-center space-x-4">
+          <div className="space-y-6">
+            <div className="flex justify-center space-x-6">
               <Button
                 onClick={playRecording}
                 variant="outline"
                 size="lg"
-                className="border-green-300 text-green-600 hover:bg-green-50"
+                className="border-green-300 text-green-600 hover:bg-green-50 px-8"
               >
-                <Play className="w-5 h-5 mr-2" />
+                <Play className="w-6 h-6 mr-3" />
                 再生
               </Button>
               <Button
                 onClick={reset}
                 variant="outline"
                 size="lg"
-                className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                className="border-gray-300 text-gray-600 hover:bg-gray-50 px-8"
               >
-                <MicOff className="w-5 h-5 mr-2" />
+                <MicOff className="w-6 h-6 mr-3" />
                 録音し直し
               </Button>
             </div>
@@ -490,136 +500,138 @@ export function AISpeakingPractice({
 
 
 
-      {/* Speech Evaluation Results */}
+      {/* Enhanced Speech Evaluation Results */}
       {comparisonData && (
-        <Card className="p-6 border-2 border-green-200 bg-white shadow-lg">
-          <div className="space-y-4">
-            {/* Evaluation Header */}
+        <Card className="p-8 border-2 border-green-200 bg-white shadow-xl">
+          <div className="space-y-6">
+            {/* Enhanced Evaluation Header */}
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
                 発音評価結果
               </h3>
-              <div className="text-6xl font-bold text-green-600 mb-2">
+              <div className="text-7xl font-bold text-green-600 mb-4">
                 {comparisonData.overallGrade}
               </div>
-              <Badge className={`${getGradeColor(comparisonData.overallGrade)} text-lg px-4 py-2 border-2`}>
+              <Badge className={`${getGradeColor(comparisonData.overallGrade)} text-xl px-6 py-3 border-2`}>
                 {comparisonData.overallGrade}級
               </Badge>
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-sm text-gray-600 mt-3">
                 5段階評価
               </p>
               
-              {/* 合格・不合格の判定を表示 */}
-              <div className="mt-4">
+              {/* Enhanced 合格・不合格の判定を表示 */}
+              <div className="mt-6">
                 {['A', 'B'].includes(comparisonData.overallGrade) ? (
-                  <div className="flex items-center justify-center space-x-2 text-green-600">
-                    <CheckCircle className="w-5 h-5" />
-                    <span className="font-medium">合格！次の問題に進みます</span>
+                  <div className="flex items-center justify-center space-x-3 text-green-600">
+                    <CheckCircle className="w-6 h-6" />
+                    <span className="font-bold text-lg">合格！次の問題に進みます</span>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center space-x-2 text-red-600">
-                    <XCircle className="w-5 h-5" />
-                    <span className="font-medium">不正解です（B以上で合格）</span>
+                  <div className="flex items-center justify-center space-x-3 text-red-600">
+                    <XCircle className="w-6 h-6" />
+                    <span className="font-bold text-lg">不正解です（B以上で合格）</span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Detailed Scores */}
+            {/* Enhanced Detailed Scores */}
             {(comparisonData.pronunciationScore || comparisonData.accuracyScore || comparisonData.fluencyScore || comparisonData.completenessScore) && (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-6">
                 {comparisonData.pronunciationScore && (
-                  <div className="bg-gray-50 p-3 rounded-lg border-2 border-green-200 text-center">
-                    <div className="text-2xl font-bold text-green-600">{comparisonData.pronunciationScore}</div>
-                    <div className="text-xs text-gray-700">発音</div>
+                  <div className="bg-gray-50 p-6 rounded-xl border-2 border-green-200 text-center">
+                    <div className="text-3xl font-bold text-green-600 mb-2">{comparisonData.pronunciationScore}</div>
+                    <div className="text-sm text-gray-700 font-medium">発音</div>
                   </div>
                 )}
                 {comparisonData.accuracyScore && (
-                  <div className="bg-gray-50 p-3 rounded-lg border-2 border-green-200 text-center">
-                    <div className="text-2xl font-bold text-green-600">{comparisonData.accuracyScore}</div>
-                    <div className="text-xs text-gray-700">正確性</div>
+                  <div className="bg-gray-50 p-6 rounded-xl border-2 border-green-200 text-center">
+                    <div className="text-3xl font-bold text-green-600 mb-2">{comparisonData.accuracyScore}</div>
+                    <div className="text-sm text-gray-700 font-medium">正確性</div>
                   </div>
                 )}
                 {comparisonData.fluencyScore && (
-                  <div className="bg-gray-50 p-3 rounded-lg border-2 border-green-200 text-center">
-                    <div className="text-2xl font-bold text-green-600">{comparisonData.fluencyScore}</div>
-                    <div className="text-xs text-gray-700">流暢性</div>
+                  <div className="bg-gray-50 p-6 rounded-xl border-2 border-green-200 text-center">
+                    <div className="text-3xl font-bold text-green-600 mb-2">{comparisonData.fluencyScore}</div>
+                    <div className="text-sm text-gray-700 font-medium">流暢性</div>
                   </div>
                 )}
                 {comparisonData.completenessScore && (
-                  <div className="bg-gray-50 p-3 rounded-lg border-2 border-green-200 text-center">
-                    <div className="text-2xl font-bold text-green-600">{comparisonData.completenessScore}</div>
-                    <div className="text-xs text-gray-700">完全性</div>
+                  <div className="bg-gray-50 p-6 rounded-xl border-2 border-green-200 text-center">
+                    <div className="text-3xl font-bold text-green-600 mb-2">{comparisonData.completenessScore}</div>
+                    <div className="text-sm text-gray-700 font-medium">完全性</div>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Recognized Text */}
+            {/* Enhanced Recognized Text */}
             {comparisonData.recognizedText && (
-              <div className="bg-gray-50 p-4 rounded-lg border-2 border-green-200">
-                <div className="text-sm font-medium text-gray-700 mb-1">認識されたテキスト:</div>
-                <div className="text-sm text-gray-800 italic">"{comparisonData.recognizedText}"</div>
+              <div className="bg-gray-50 p-6 rounded-xl border-2 border-green-200">
+                <div className="text-sm font-bold text-gray-700 mb-3">認識されたテキスト:</div>
+                <div className="text-lg text-gray-800 italic bg-white p-4 rounded-lg border">
+                  "{comparisonData.recognizedText}"
+                </div>
               </div>
             )}
 
-            {/* Evaluation Feedback */}
-            <div className="bg-gray-50 p-4 rounded-lg border-2 border-green-200">
-              <div className="text-sm text-gray-800">
+            {/* Enhanced Evaluation Feedback */}
+            <div className="bg-gray-50 p-6 rounded-xl border-2 border-green-200">
+              <div className="text-lg text-gray-800 leading-relaxed">
                 {comparisonData.feedback}
               </div>
             </div>
 
-            {/* Positive Points */}
+            {/* Enhanced Positive Points */}
             {comparisonData.positives && comparisonData.positives.length > 0 && (
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                  <span className="font-medium text-green-700">良かった点</span>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="font-bold text-green-700 text-lg">良かった点</span>
                 </div>
-                <ul className="text-sm text-green-700 space-y-1">
+                <ul className="text-green-700 space-y-2">
                   {comparisonData.positives.map((positive: string, index: number) => (
-                    <li key={index} className="flex items-start space-x-2">
-                      <span>✓</span>
-                      <span>{positive}</span>
+                    <li key={index} className="flex items-start space-x-3">
+                      <span className="text-green-600 font-bold">✓</span>
+                      <span className="text-lg">{positive}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
 
-            {/* Improvements */}
+            {/* Enhanced Improvements */}
             {comparisonData.improvements && comparisonData.improvements.length > 0 && (
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <AlertCircle className="w-4 h-4 text-orange-600" />
-                  <span className="font-medium text-orange-700">改善点</span>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3">
+                  <AlertCircle className="w-5 h-5 text-orange-600" />
+                  <span className="font-bold text-orange-700 text-lg">改善点</span>
                 </div>
-                <ul className="text-sm text-orange-700 space-y-1">
+                <ul className="text-orange-700 space-y-2">
                   {comparisonData.improvements.map((improvement: string, index: number) => (
-                    <li key={index} className="flex items-start space-x-2">
-                      <span>•</span>
-                      <span>{improvement}</span>
+                    <li key={index} className="flex items-start space-x-3">
+                      <span className="text-orange-600 font-bold">•</span>
+                      <span className="text-lg">{improvement}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
 
-            {/* 改善ポイントブロック */}
-            <div className="bg-blue-50 rounded-xl p-3 border border-blue-200">
-              <h3 className="text-sm font-bold text-blue-800 mb-2 text-center">
+            {/* Enhanced 改善ポイントブロック */}
+            <div className="bg-blue-50 rounded-xl p-6 border-2 border-blue-200">
+              <h3 className="text-lg font-bold text-blue-800 mb-4 text-center">
                 改善ポイント
               </h3>
-              <div className="space-y-2">
+              <div className="space-y-4">
                 {/* 発音に沿ったアドバイス（3つ） */}
                 {comparisonData.improvements && comparisonData.improvements.length > 0 ? (
                   comparisonData.improvements.slice(0, 3).map((improvement: string, index: number) => (
-                    <div key={index} className="flex items-start space-x-2">
-                      <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
+                    <div key={index} className="flex items-start space-x-3">
+                      <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 text-sm">
                         {index + 1}
                       </div>
-                      <p className="text-sm text-blue-800 font-medium leading-relaxed">
+                      <p className="text-blue-800 font-medium leading-relaxed text-lg">
                         {improvement}
                       </p>
                     </div>
@@ -627,17 +639,17 @@ export function AISpeakingPractice({
                 ) : (
                   // フォールバック用のデフォルト改善ポイント
                   <>
-                    <div className="flex items-start space-x-2">
-                      <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">1</div>
-                      <p className="text-sm text-blue-800 font-medium">お手本音声をもう一度聞いてみましょう</p>
+                    <div className="flex items-start space-x-3">
+                      <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 text-sm">1</div>
+                      <p className="text-blue-800 font-medium text-lg">お手本音声をもう一度聞いてみましょう</p>
                     </div>
-                    <div className="flex items-start space-x-2">
-                      <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">2</div>
-                      <p className="text-sm text-blue-800 font-medium">一つ一つの音を意識して発音してみましょう</p>
+                    <div className="flex items-start space-x-3">
+                      <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 text-sm">2</div>
+                      <p className="text-blue-800 font-medium text-lg">一つ一つの音を意識して発音してみましょう</p>
                     </div>
-                    <div className="flex items-start space-x-2">
-                      <div className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">3</div>
-                      <p className="text-sm text-blue-800 font-medium">口の形と舌の位置に注意してみましょう</p>
+                    <div className="flex items-start space-x-3">
+                      <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 text-sm">3</div>
+                      <p className="text-blue-800 font-medium text-lg">口の形と舌の位置に注意してみましょう</p>
                     </div>
                   </>
                 )}
@@ -648,18 +660,18 @@ export function AISpeakingPractice({
                     {comparisonData.detailedAnalysis.katakanaDetection?.detected && !['A'].includes(comparisonData.overallGrade) ? (
                       // カタカナ発音が検出された場合
                       <>
-                        <div className="flex items-start space-x-2">
-                          <div className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">4</div>
-                          <p className="text-sm text-red-800 font-medium">
+                        <div className="flex items-start space-x-3">
+                          <div className="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 text-sm">4</div>
+                          <p className="text-red-800 font-medium text-lg">
                             {comparisonData.detailedAnalysis.katakanaDetection.confidence > 0.7 
                               ? 'カタカナ発音が強く検出されています。ネイティブ発音を意識して練習してください'
                               : 'カタカナ発音が検出されています。英語の音素を正確に発音するよう心がけてください'
                             }
                           </p>
                         </div>
-                        <div className="flex items-start space-x-2">
-                          <div className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">5</div>
-                          <p className="text-sm text-red-800 font-medium">
+                        <div className="flex items-start space-x-3">
+                          <div className="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 text-sm">5</div>
+                          <p className="text-red-800 font-medium text-lg">
                             {comparisonData.detailedAnalysis.katakanaDetection.confidence > 0.7
                               ? 'リズムとイントネーションを自然にし、英語らしい発音を目指してください'
                               : 'お手本音声のリズムとイントネーションを参考に練習してください'
@@ -670,15 +682,15 @@ export function AISpeakingPractice({
                     ) : (
                       // カタカナ発音が検出されない場合の追加アドバイス（2つ）
                       <>
-                        <div className="flex items-start space-x-2">
-                          <div className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">4</div>
-                          <p className="text-sm text-green-800 font-medium">
+                        <div className="flex items-start space-x-3">
+                          <div className="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 text-sm">4</div>
+                          <p className="text-green-800 font-medium text-lg">
                             リズムとイントネーションを自然にしてください
                           </p>
                         </div>
-                        <div className="flex items-start space-x-2">
-                          <div className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">5</div>
-                          <p className="text-sm text-green-800 font-medium">
+                        <div className="flex items-start space-x-3">
+                          <div className="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0 text-sm">5</div>
+                          <p className="text-green-800 font-medium text-lg">
                             良い発音です。さらに練習しましょう
                           </p>
                         </div>
@@ -689,22 +701,24 @@ export function AISpeakingPractice({
               </div>
             </div>
             
-            {/* Action Buttons */}
+            {/* Enhanced Action Buttons */}
             {showRetryButton && (
-              <div className="flex justify-center space-x-4 mt-4">
+              <div className="flex justify-center space-x-6 mt-8">
                 <Button
                   onClick={reset}
                   variant="outline"
-                  className="flex items-center space-x-2 border-gray-300 text-gray-600 hover:bg-gray-50"
+                  size="lg"
+                  className="flex items-center space-x-3 border-gray-300 text-gray-600 hover:bg-gray-50 px-8"
                 >
-                  <MicOff className="w-4 h-4" />
-                  <span>もう一度録音</span>
+                  <MicOff className="w-5 h-5" />
+                  <span className="text-lg">もう一度録音</span>
                 </Button>
                 <Button
                   onClick={handleNextQuestion}
-                  className="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white"
+                  size="lg"
+                  className="flex items-center space-x-3 bg-green-500 hover:bg-green-600 text-white px-8"
                 >
-                  <span>次の問題に進む</span>
+                  <span className="text-lg">次の問題に進む</span>
                 </Button>
               </div>
             )}
