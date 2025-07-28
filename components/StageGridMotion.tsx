@@ -26,7 +26,7 @@ export default function StageGridMotion() {
 
   return (
     <motion.div 
-      className="grid grid-cols-3 gap-6 px-6 py-8"
+      className="flex flex-col space-y-6 px-6 py-8"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -34,17 +34,28 @@ export default function StageGridMotion() {
       {stages.map((stage, index) => (
         <motion.div
           key={stage.id}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ delay: index * 0.1 }}
+          className="flex items-center space-x-4"
         >
-          <StageNodeMotion
-            id={stage.id}
-            title={stage.title}
-            description={stage.description}
-            status={getStageStatus(stage.id, index)}
-            onClick={() => router.push(`/stage/${stage.id}`)}
-          />
+          {/* Stage Number */}
+          <div className="flex-shrink-0">
+            <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+              <span className="text-lg font-bold text-gray-600">{index + 1}</span>
+            </div>
+          </div>
+
+          {/* Stage Content */}
+          <div className="flex-1">
+            <StageNodeMotion
+              id={stage.id}
+              title={stage.title}
+              description={stage.description}
+              status={getStageStatus(stage.id, index)}
+              onClick={() => router.push(`/stage/${stage.id}`)}
+            />
+          </div>
         </motion.div>
       ))}
     </motion.div>

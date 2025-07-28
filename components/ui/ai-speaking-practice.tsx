@@ -380,12 +380,12 @@ export function AISpeakingPractice({
 
   const getGradeColor = (grade: string) => {
     switch (grade) {
-      case 'A': return 'text-green-600 bg-green-100'
-      case 'B': return 'text-blue-600 bg-blue-100'
-      case 'C': return 'text-yellow-600 bg-yellow-100'
-      case 'D': return 'text-orange-600 bg-orange-100'
-      case 'E': return 'text-red-600 bg-red-100'
-      default: return 'text-gray-600 bg-gray-100'
+      case 'A': return 'text-green-600 bg-green-100 border-green-300'
+      case 'B': return 'text-blue-600 bg-blue-100 border-blue-300'
+      case 'C': return 'text-yellow-600 bg-yellow-100 border-yellow-300'
+      case 'D': return 'text-orange-600 bg-orange-100 border-orange-300'
+      case 'E': return 'text-red-600 bg-red-100 border-red-300'
+      default: return 'text-gray-600 bg-gray-100 border-gray-300'
     }
   }
 
@@ -394,37 +394,41 @@ export function AISpeakingPractice({
       {/* Recording Controls */}
       <div className="text-center space-y-4">
         {/* Example Audio Button */}
-      <div className="flex justify-center">
-        <Button
+        <div className="flex justify-center">
+          <Button
             onClick={playExampleAudio}
             disabled={isPlayingExample}
-          variant="outline"
+            variant="outline"
             size="sm"
-            className="mb-4"
-        >
+            className="border-green-300 text-green-600 hover:bg-green-50"
+          >
             <Volume2 className="w-4 h-4 mr-2" />
             {isPlayingExample ? 'お手本を再生中...' : 'お手本を聞く'}
-        </Button>
-      </div>
-
-        {!hasRecorded ? (
-      <div className="space-y-4">
-            <div className="flex justify-center space-x-4">
-          <Button
-            onClick={isRecording ? stopRecording : startRecording}
-            size="lg"
-                className={`${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'} rounded-full w-16 h-16`}
-              >
-                {isRecording ? <Square className="w-8 h-8" /> : <Mic className="w-8 h-8" />}
           </Button>
         </div>
 
-        {isRecording && (
+        {!hasRecorded ? (
+          <div className="space-y-4">
+            <div className="flex justify-center">
+              <Button
+                onClick={isRecording ? stopRecording : startRecording}
+                size="lg"
+                className={`${
+                  isRecording 
+                    ? 'bg-red-500 hover:bg-red-600' 
+                    : 'bg-green-500 hover:bg-green-600'
+                } rounded-full w-20 h-20 shadow-lg`}
+              >
+                {isRecording ? <Square className="w-10 h-10" /> : <Mic className="w-10 h-10" />}
+              </Button>
+            </div>
+
+            {isRecording && (
               <div className="space-y-2">
                 <div className="text-red-600 font-medium">録音中...</div>
                 <div className="text-sm text-gray-600">
                   {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
-            </div>
+                </div>
               </div>
             )}
             
@@ -439,6 +443,7 @@ export function AISpeakingPractice({
                 onClick={playRecording}
                 variant="outline"
                 size="lg"
+                className="border-green-300 text-green-600 hover:bg-green-50"
               >
                 <Play className="w-5 h-5 mr-2" />
                 再生
@@ -447,11 +452,12 @@ export function AISpeakingPractice({
                 onClick={reset}
                 variant="outline"
                 size="lg"
+                className="border-gray-300 text-gray-600 hover:bg-gray-50"
               >
                 <MicOff className="w-5 h-5 mr-2" />
                 録音し直し
               </Button>
-          </div>
+            </div>
           </div>
         )}
       </div>
@@ -486,20 +492,20 @@ export function AISpeakingPractice({
 
       {/* Speech Evaluation Results */}
       {comparisonData && (
-        <Card className="p-6 border-purple-200 bg-purple-50">
+        <Card className="p-6 border-2 border-green-200 bg-white shadow-lg">
           <div className="space-y-4">
             {/* Evaluation Header */}
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-purple-800 mb-2">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 発音評価結果
               </h3>
-              <div className="text-6xl font-bold text-purple-600 mb-2">
+              <div className="text-6xl font-bold text-green-600 mb-2">
                 {comparisonData.overallGrade}
               </div>
-              <Badge className={`${getGradeColor(comparisonData.overallGrade)} text-lg px-4 py-2`}>
+              <Badge className={`${getGradeColor(comparisonData.overallGrade)} text-lg px-4 py-2 border-2`}>
                 {comparisonData.overallGrade}級
               </Badge>
-              <p className="text-sm text-purple-700 mt-2">
+              <p className="text-sm text-gray-600 mt-2">
                 5段階評価
               </p>
               
@@ -523,27 +529,27 @@ export function AISpeakingPractice({
             {(comparisonData.pronunciationScore || comparisonData.accuracyScore || comparisonData.fluencyScore || comparisonData.completenessScore) && (
               <div className="grid grid-cols-2 gap-4">
                 {comparisonData.pronunciationScore && (
-                  <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
-                    <div className="text-2xl font-bold text-purple-600">{comparisonData.pronunciationScore}</div>
-                    <div className="text-xs text-purple-700">発音</div>
+                  <div className="bg-gray-50 p-3 rounded-lg border-2 border-green-200 text-center">
+                    <div className="text-2xl font-bold text-green-600">{comparisonData.pronunciationScore}</div>
+                    <div className="text-xs text-gray-700">発音</div>
                   </div>
                 )}
                 {comparisonData.accuracyScore && (
-                  <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
-                    <div className="text-2xl font-bold text-purple-600">{comparisonData.accuracyScore}</div>
-                    <div className="text-xs text-purple-700">正確性</div>
+                  <div className="bg-gray-50 p-3 rounded-lg border-2 border-green-200 text-center">
+                    <div className="text-2xl font-bold text-green-600">{comparisonData.accuracyScore}</div>
+                    <div className="text-xs text-gray-700">正確性</div>
                   </div>
                 )}
                 {comparisonData.fluencyScore && (
-                  <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
-                    <div className="text-2xl font-bold text-purple-600">{comparisonData.fluencyScore}</div>
-                    <div className="text-xs text-purple-700">流暢性</div>
+                  <div className="bg-gray-50 p-3 rounded-lg border-2 border-green-200 text-center">
+                    <div className="text-2xl font-bold text-green-600">{comparisonData.fluencyScore}</div>
+                    <div className="text-xs text-gray-700">流暢性</div>
                   </div>
                 )}
                 {comparisonData.completenessScore && (
-                  <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
-                    <div className="text-2xl font-bold text-purple-600">{comparisonData.completenessScore}</div>
-                    <div className="text-xs text-purple-700">完全性</div>
+                  <div className="bg-gray-50 p-3 rounded-lg border-2 border-green-200 text-center">
+                    <div className="text-2xl font-bold text-green-600">{comparisonData.completenessScore}</div>
+                    <div className="text-xs text-gray-700">完全性</div>
                   </div>
                 )}
               </div>
@@ -551,15 +557,15 @@ export function AISpeakingPractice({
 
             {/* Recognized Text */}
             {comparisonData.recognizedText && (
-              <div className="bg-white p-4 rounded-lg border border-purple-200">
-                <div className="text-sm font-medium text-purple-700 mb-1">認識されたテキスト:</div>
-                <div className="text-sm text-purple-800 italic">"{comparisonData.recognizedText}"</div>
+              <div className="bg-gray-50 p-4 rounded-lg border-2 border-green-200">
+                <div className="text-sm font-medium text-gray-700 mb-1">認識されたテキスト:</div>
+                <div className="text-sm text-gray-800 italic">"{comparisonData.recognizedText}"</div>
               </div>
             )}
 
             {/* Evaluation Feedback */}
-            <div className="bg-white p-4 rounded-lg border border-purple-200">
-              <div className="text-sm text-purple-800">
+            <div className="bg-gray-50 p-4 rounded-lg border-2 border-green-200">
+              <div className="text-sm text-gray-800">
                 {comparisonData.feedback}
               </div>
             </div>
@@ -594,32 +600,32 @@ export function AISpeakingPractice({
                     <li key={index} className="flex items-start space-x-2">
                       <span>•</span>
                       <span>{improvement}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
             {/* Action Buttons */}
             {showRetryButton && (
               <div className="flex justify-center space-x-4 mt-4">
                 <Button
                   onClick={reset}
                   variant="outline"
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 border-gray-300 text-gray-600 hover:bg-gray-50"
                 >
                   <MicOff className="w-4 h-4" />
                   <span>もう一度録音</span>
                 </Button>
                 <Button
                   onClick={handleNextQuestion}
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white"
                 >
                   <span>次の問題に進む</span>
                 </Button>
               </div>
             )}
-        </div>
+          </div>
         </Card>
       )}
     </div>
