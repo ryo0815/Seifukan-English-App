@@ -25,6 +25,20 @@
   --radius: 0.5rem;
 }
 
+/* Duolingoスタイルのカスタムアニメーション */
+@keyframes bounceSlow {
+  0%, 100% { 
+    transform: translateY(0); 
+  }
+  50% { 
+    transform: translateY(-4px); 
+  }
+}
+
+.animate-bounce-slow { 
+  animation: bounceSlow 2s infinite; 
+}
+
 /* テスト用のカスタムスタイル */
 .test-red {
   background-color: #ef4444 !important;
@@ -36,5 +50,26 @@
   background-color: #3b82f6 !important;
   color: white !important;
   padding: 1rem !important;
+}
+
+/* Duolingoスタイルのカスタムカラー */
+.bg-primary-green {
+  background-color: #58CC02;
+}
+
+.text-primary-green {
+  color: #58CC02;
+}
+
+.border-primary-green {
+  border-color: #58CC02;
+}
+
+.bg-soft-yellow {
+  background-color: #FFFDF8;
+}
+
+.bg-success-light {
+  background-color: #E6FCD9;
 }
 

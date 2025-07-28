@@ -1,157 +1,155 @@
 "use client"
 
+import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { stages } from "@/lib/phrases"
-import { 
-  Shield, 
-  Sword, 
-  Star,
-  ArrowDown,
-  Play,
-  Lock
-} from "lucide-react"
+import { copy } from "@/lib/copywriting"
+import StageGridMotion from "@/components/StageGridMotion"
+import MissionCardMotion from "@/components/MissionCardMotion"
+import { useState } from 'react'
+
+const missions = [
+  {
+    id: 'mission-1',
+    title: '英語が必要なバイトにチャレンジする',
+    description: '実践的な英語力を身につけよう',
+    xp: 20,
+    completed: false
+  },
+  {
+    id: 'mission-2',
+    title: '英語で30秒間、切れ目なく自己紹介',
+    description: '流暢な英語を目指そう',
+    xp: 30,
+    completed: false
+  },
+  {
+    id: 'mission-3',
+    title: '英語アプリで7日間連続学習',
+    description: '継続は力なり',
+    xp: 25,
+    completed: false
+  },
+  {
+    id: 'mission-4',
+    title: '外国人観光客に話しかけてみる',
+    description: '実践的な会話力を試そう',
+    xp: 40,
+    completed: false
+  }
+]
 
 export default function Home() {
   const router = useRouter()
+  const [completedMissions, setCompletedMissions] = useState<string[]>([])
 
-  const stageIcons = {
-    'stage-0': Shield,
-    'stage-1': Sword,
-    'stage-2': Star
+  const handleMissionComplete = (missionId: string) => {
+    setCompletedMissions(prev => [...prev, missionId])
   }
 
-  const stageColors = {
-    'stage-0': 'from-blue-500 to-cyan-500',
-    'stage-1': 'from-orange-500 to-red-500',
-    'stage-2': 'from-purple-500 to-pink-500'
-  }
-
-  const handleStageClick = (stageId: string) => {
-    router.push(`/stage/${stageId}`)
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-      {/* Header */}
-      <header className="p-6 text-center">
-        <div className="bg-gradient-to-r from-blue-400 to-cyan-400 rounded-2xl p-6 mx-auto max-w-md mb-8">
-          <h1 className="text-2xl font-bold text-white mb-2">青楓館式</h1>
-          <h2 className="text-xl font-semibold text-blue-100">英語開発</h2>
-        </div>
-      </header>
+    <div className="min-h-screen bg-soft-yellow">
+      {/* Hero Section */}
+      <motion.div 
+        className="bg-gradient-to-br from-green-400 to-green-600 p-6 text-center"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <motion.h1 
+          className="text-3xl font-bold text-white mb-2"
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: 'spring' }}
+        >
+          {copy.heroTitle}
+        </motion.h1>
+        <motion.p 
+          className="text-green-100 text-lg"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
+          {copy.heroSubtitle}
+        </motion.p>
+      </motion.div>
 
-      {/* Quest Path */}
-      <div className="max-w-md mx-auto px-6 pb-20">
-        {stages.map((stage, index) => {
-          const IconComponent = stageIcons[stage.id as keyof typeof stageIcons]
-          const isLocked = false // 全てのステージを利用可能に変更
-          
-          return (
-            <div key={stage.id} className="relative mb-8">
-              {/* Connection Line */}
-              {index < stages.length - 1 && (
-                <div className="absolute left-1/2 top-32 transform -translate-x-1/2 w-1 h-16 bg-gradient-to-b from-white/30 to-transparent z-0"></div>
-              )}
-              
-              {/* Stage Card */}
-              <Card 
-                className={`relative p-6 bg-gradient-to-r ${stageColors[stage.id as keyof typeof stageColors]} border-2 border-white/20 shadow-xl backdrop-blur-sm ${
-                  isLocked ? 'opacity-60' : 'hover:shadow-2xl transition-all duration-300'
-                }`}
-              >
-                <div className="text-center text-white">
-                  {/* Stage Icon */}
-                  <div className="flex justify-center mb-4">
-                    <div className="relative">
-                      <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                        {isLocked ? (
-                          <Lock className="w-8 h-8 text-white/70" />
-                        ) : (
-                          <IconComponent className="w-8 h-8 text-white" />
-                        )}
-                      </div>
-                      {!isLocked && (
-                        <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
-                          <span className="text-xs font-bold text-yellow-900">✓</span>
-                        </div>
-                      )}
-        </div>
-      </div>
-
-                  {/* Stage Title */}
-                  <h3 className="text-xl font-bold mb-2">{stage.title}</h3>
-                  <p className="text-white/90 text-sm mb-4">{stage.description}</p>
-                  
-                  {/* Sub-stages Count */}
-                  <div className="flex justify-center items-center mb-4">
-                    <div className="bg-white/20 rounded-full px-3 py-1">
-                      <span className="text-sm font-medium">
-                        {stage.subStages.length}個のエリア
-                      </span>
-                    </div>
-            </div>
-                  
-                  {/* Action Button */}
-                  <Button
-                    onClick={() => handleStageClick(stage.id)}
-                    disabled={isLocked}
-                    variant="secondary"
-                    className={`w-full ${
-                      isLocked 
-                        ? 'bg-gray-500 text-gray-300 cursor-not-allowed' 
-                        : 'bg-white text-gray-800 hover:bg-gray-100'
-                    }`}
-                  >
-                    {isLocked ? (
-                      <>
-                        <Lock className="w-4 h-4 mr-2" />
-                        ロック中
-                      </>
-                    ) : (
-                      <>
-                        <Play className="w-4 h-4 mr-2" />
-                        挑戦する
-                      </>
-                    )}
-                  </Button>
-            </div>
-          </Card>
-          
-              {/* Arrow Connector */}
-              {index < stages.length - 1 && (
-                <div className="flex justify-center mt-4">
-                  <ArrowDown className="w-6 h-6 text-white/50" />
-            </div>
-              )}
-            </div>
-          )
-        })}
-      </div>
+      {/* Stage Grid */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="py-6"
+      >
+        <motion.h2 
+          className="text-2xl font-semibold text-center text-gray-800 mb-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          学習ステージ
+        </motion.h2>
+        <StageGridMotion />
+      </motion.div>
 
       {/* Mission Section */}
-      <div className="bg-gradient-to-r from-slate-800 to-slate-700 p-6 mx-6 rounded-2xl mb-8">
-        <h3 className="text-xl font-bold text-white mb-4 text-center">🎯 ミッション</h3>
-        <div className="space-y-2 text-white/90 text-sm">
-          <div className="flex items-start">
-            <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-            <span>英語が必要なバイトにチャレンジする</span>
-          </div>
-          <div className="flex items-start">
-            <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-            <span>英語で30秒間、切れ目なく自己紹介をすることができる</span>
-          </div>
-          <div className="flex items-start">
-            <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-            <span>英語アプリで7日間連続学習（Duolingoなど）</span>
-          </div>
-          <div className="flex items-start">
-            <span className="w-2 h-2 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-            <span>外国人観光客に話しかけてみる</span>
-          </div>
-        </div>
-      </div>
+      <motion.div 
+        className="px-6 pb-20"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+      >
+        <motion.div 
+          className="text-center mb-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.0 }}
+        >
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+            {copy.missionTitle}
+          </h2>
+          <p className="text-gray-600 text-sm">
+            {copy.missionSubtitle}
+          </p>
+        </motion.div>
+
+        <motion.div 
+          className="space-y-3"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {missions.map((mission, index) => (
+            <motion.div
+              key={mission.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.2 + index * 0.1 }}
+            >
+              <MissionCardMotion
+                mission={{
+                  ...mission,
+                  completed: completedMissions.includes(mission.id)
+                }}
+                onComplete={handleMissionComplete}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.div>
     </div>
   )
 }
