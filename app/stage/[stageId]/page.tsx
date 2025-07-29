@@ -20,7 +20,8 @@ import {
   Target,
   Users,
   Clock,
-  Trophy
+  Trophy,
+  Flag
 } from "lucide-react"
 
 export default function StagePage() {
@@ -52,7 +53,15 @@ export default function StagePage() {
     'stage-2': '高度な表現を習得し、ネイティブレベルの英語を目指しましょう'
   }
 
+  const stageTitles = {
+    'stage-0': '🌱 基礎の森',
+    'stage-1': '🏔️ 実践の山',
+    'stage-2': '⭐ 上級の空'
+  }
+
   const IconComponent = stageIcons[stageId as keyof typeof stageIcons]
+  const stageColor = stageColors[stageId as keyof typeof stageColors]
+  const stageTitle = stageTitles[stageId as keyof typeof stageTitles]
 
   const handleSubStageClick = (subStageId: string) => {
     router.push(`/stage/${stageId}/${subStageId}`)
@@ -75,9 +84,9 @@ export default function StagePage() {
 
   return (
     <div className="min-h-screen bg-soft-yellow">
-      {/* Enhanced Header */}
+      {/* Enhanced Header with Stage-specific Background */}
       <motion.header 
-        className="relative overflow-hidden bg-gradient-to-r from-green-400 to-green-600 p-6"
+        className={`relative overflow-hidden bg-gradient-to-r ${stageColor} p-6`}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -98,7 +107,10 @@ export default function StagePage() {
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
                 <IconComponent className="w-6 h-6 text-white" />
               </div>
-              <h1 className="text-xl font-bold text-white">{stage.title}</h1>
+              <div>
+                <h1 className="text-xl font-bold text-white">{stageTitle}</h1>
+                <p className="text-white/90 text-sm">{stage.title}</p>
+              </div>
             </div>
             <p className="text-white/90 text-sm">
               {stageDescriptions[stageId as keyof typeof stageDescriptions]}
@@ -154,9 +166,9 @@ export default function StagePage() {
           transition={{ delay: 0.5 }}
         >
           <div className="flex items-center justify-center mb-4">
-            <BookOpen className="w-6 h-6 text-green-600 mr-2" />
+            <Flag className="w-6 h-6 text-green-600 mr-2" />
             <h2 className="text-2xl font-bold text-gray-800">学習エリア</h2>
-            <BookOpen className="w-6 h-6 text-green-600 ml-2" />
+            <Flag className="w-6 h-6 text-green-600 ml-2" />
           </div>
           <p className="text-gray-600">段階的に学習を進めましょう</p>
         </motion.div>

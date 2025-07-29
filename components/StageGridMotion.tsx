@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react'
 export default function StageGridMotion() {
   const router = useRouter()
   const [isMobile, setIsMobile] = useState(false)
+  const [currentStageIndex, setCurrentStageIndex] = useState(0)
+  const [scrollPosition, setScrollPosition] = useState(0)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -19,6 +21,48 @@ export default function StageGridMotion() {
     
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  // キーボードナビゲーション
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      switch (event.key.toLowerCase()) {
+        case 'a':
+          // 左に移動
+          setCurrentStageIndex(prev => Math.max(0, prev - 1))
+          break
+        case 'd':
+          // 右に移動
+          setCurrentStageIndex(prev => Math.min(stages.length - 1, prev + 1))
+          break
+        case 'enter':
+        case ' ':
+          // 現在のステージを選択
+          if (currentStageIndex < stages.length) {
+            router.push(`/stage/${stages[currentStageIndex].id}`)
+          }
+          break
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [currentStageIndex, router])
+
+  // スクロール位置の更新
+  useEffect(() => {
+    const container = document.getElementById('stage-container')
+    if (container) {
+      const stageWidth = 200 // 概算のステージ幅
+      const newScrollPosition = currentStageIndex * stageWidth
+      setScrollPosition(newScrollPosition)
+      
+      // スムーズスクロール
+      container.scrollTo({
+        left: newScrollPosition,
+        behavior: 'smooth'
+      })
+    }
+  }, [currentStageIndex])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -45,6 +89,24 @@ export default function StageGridMotion() {
     return ['☆', '☆', '☆'] // 未開始
   }
 
+  const getStageBackground = (index: number) => {
+    const backgrounds = [
+      'from-blue-400 via-blue-500 to-blue-600', // ステージ1: 青
+      'from-orange-400 via-orange-500 to-orange-600', // ステージ2: オレンジ
+      'from-purple-400 via-purple-500 to-purple-600' // ステージ3: 紫
+    ]
+    return backgrounds[index] || backgrounds[0]
+  }
+
+  const getStageTitle = (index: number) => {
+    const titles = [
+      '🌱 基礎の森',
+      '🏔️ 実践の山',
+      '⭐ 上級の空'
+    ]
+    return titles[index] || 'ステージ'
+  }
+
   return (
     <div className="relative min-h-[400px] overflow-hidden">
       {/* Mario Background */}
@@ -63,15 +125,57 @@ export default function StageGridMotion() {
         initial="hidden"
         animate="visible"
       >
+        {/* Stage Title */}
+        <motion.div 
+          className="text-center mb-6"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <div className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${getStageBackground(currentStageIndex)} text-white shadow-lg`}>
+            <h3 className="text-xl font-bold">{getStageTitle(currentStageIndex)}</h3>
+            <p className="text-sm opacity-90">ステージ {currentStageIndex + 1} / {stages.length}</p>
+          </div>
+        </motion.div>
+
+        {/* Navigation Instructions */}
+        <motion.div 
+          className="text-center mb-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <div className="inline-flex items-center space-x-4 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
+            <div className="flex items-center space-x-2">
+              <kbd className="px-2 py-1 bg-gray-200 rounded text-xs font-mono">A</kbd>
+              <span className="text-sm text-gray-600">左移動</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <kbd className="px-2 py-1 bg-gray-200 rounded text-xs font-mono">D</kbd>
+              <span className="text-sm text-gray-600">右移動</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <kbd className="px-2 py-1 bg-gray-200 rounded text-xs font-mono">Enter</kbd>
+              <span className="text-sm text-gray-600">選択</span>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Horizontal Stage Path */}
-        <div className="flex items-center justify-center space-x-8 overflow-x-auto pb-8">
+        <div 
+          id="stage-container"
+          className="flex items-center justify-center space-x-8 overflow-x-auto pb-8 scrollbar-hide"
+          style={{ scrollBehavior: 'smooth' }}
+        >
           {stages.map((stage, index) => (
             <motion.div
               key={stage.id}
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.2 }}
-              className="flex flex-col items-center space-y-4"
+              className={`flex flex-col items-center space-y-4 relative ${
+                index === currentStageIndex ? 'ring-4 ring-yellow-400 ring-opacity-50 rounded-full p-2' : ''
+              }`}
               style={{
                 marginTop: index % 2 === 0 ? '2rem' : '0rem',
                 marginBottom: index % 2 === 0 ? '0rem' : '2rem',
@@ -137,6 +241,18 @@ export default function StageGridMotion() {
               >
                 {index + 1}
               </motion.div>
+
+              {/* Current Stage Indicator */}
+              {index === currentStageIndex && (
+                <motion.div
+                  className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring' }}
+                >
+                  現在選択中
+                </motion.div>
+              )}
             </motion.div>
           ))}
         </div>
