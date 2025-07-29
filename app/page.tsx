@@ -60,6 +60,7 @@ const missions = [
 export default function Home() {
   const router = useRouter()
   const [completedMissions, setCompletedMissions] = useState<string[]>([])
+  const [currentStageIndex, setCurrentStageIndex] = useState(0)
 
   const handleMissionComplete = (missionId: string) => {
     setCompletedMissions(prev => [...prev, missionId])
@@ -76,11 +77,29 @@ export default function Home() {
     }
   }
 
+  const getStageBackground = (index: number) => {
+    const backgrounds = [
+      'from-green-400 via-green-500 to-green-600', // ステージ1: 緑
+      'from-orange-400 via-orange-500 to-orange-600', // ステージ2: オレンジ
+      'from-purple-400 via-purple-500 to-purple-600' // ステージ3: 紫
+    ]
+    return backgrounds[index] || backgrounds[0]
+  }
+
+  const getStageTitle = (index: number) => {
+    const titles = [
+      '🌱 基礎の森',
+      '🏔️ 実践の山',
+      '⭐ 上級の空'
+    ]
+    return titles[index] || 'ステージ'
+  }
+
   return (
     <div className="min-h-screen bg-soft-yellow">
-      {/* Compact Hero Section */}
+      {/* Dynamic Hero Section with Stage-specific Background */}
       <motion.div 
-        className="relative overflow-hidden bg-gradient-to-br from-green-400 via-green-500 to-green-600 p-4"
+        className={`relative overflow-hidden bg-gradient-to-br ${getStageBackground(currentStageIndex)} p-4`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
@@ -110,26 +129,26 @@ export default function Home() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            {copy.heroTitle}
+            青楓館式 英語開発
           </motion.h1>
           
           <motion.p 
-            className="text-green-100 text-sm max-w-md mx-auto"
+            className="text-white/90 text-sm max-w-md mx-auto"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6 }}
           >
-            {copy.heroSubtitle}
+            日常会話に特化した発音練習
           </motion.p>
         </div>
       </motion.div>
 
-      {/* Mario Style Stage Grid - Main Content */}
+      {/* Light Yellow Content Area with Horizontal Sub-stages */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="py-4"
+        className="py-4 bg-soft-yellow min-h-[400px]"
       >
         <motion.div 
           className="text-center mb-6"
@@ -146,8 +165,34 @@ export default function Home() {
         </motion.div>
         
         <div className="max-w-full mx-auto">
-          <StageGridMotion />
+          <StageGridMotion 
+            onStageChange={setCurrentStageIndex}
+            currentStageIndex={currentStageIndex}
+          />
         </div>
+      </motion.div>
+
+      {/* Mario-style Ground Footer */}
+      <motion.div 
+        className="relative h-24 bg-gradient-to-b from-orange-400 via-orange-600 to-orange-800"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.0 }}
+      >
+        {/* Ground Path Line */}
+        <motion.div 
+          className="absolute top-0 left-0 h-1 bg-green-500"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1, delay: 1.2 }}
+          style={{ 
+            width: `${((currentStageIndex + 1) / stages.length) * 66.67}%`
+          }}
+        />
+        
+        {/* Ground Stripes */}
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-orange-600"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-4 bg-orange-800"></div>
       </motion.div>
 
       {/* Hidden Mission Section - Only show on demand */}

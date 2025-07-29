@@ -5,11 +5,26 @@ import { useRouter } from 'next/navigation'
 import { ChevronRight, ChevronLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-export default function StageGridMotion() {
+interface StageGridMotionProps {
+  onStageChange?: (index: number) => void
+  currentStageIndex?: number
+}
+
+export default function StageGridMotion({ 
+  onStageChange, 
+  currentStageIndex: externalCurrentStageIndex 
+}: StageGridMotionProps) {
   const router = useRouter()
   const [isMobile, setIsMobile] = useState(false)
-  const [currentStageIndex, setCurrentStageIndex] = useState(0)
+  const [currentStageIndex, setCurrentStageIndex] = useState(externalCurrentStageIndex || 0)
   const [scrollPosition, setScrollPosition] = useState(0)
+
+  // 外部からcurrentStageIndexが変更された場合の処理
+  useEffect(() => {
+    if (externalCurrentStageIndex !== undefined) {
+      setCurrentStageIndex(externalCurrentStageIndex)
+    }
+  }, [externalCurrentStageIndex])
 
   useEffect(() => {
     const checkMobile = () => {
@@ -28,11 +43,15 @@ export default function StageGridMotion() {
       switch (event.key.toLowerCase()) {
         case 'a':
           // 左に移動
-          setCurrentStageIndex(prev => Math.max(0, prev - 1))
+          const newLeftIndex = Math.max(0, currentStageIndex - 1)
+          setCurrentStageIndex(newLeftIndex)
+          onStageChange?.(newLeftIndex)
           break
         case 'd':
           // 右に移動
-          setCurrentStageIndex(prev => Math.min(stages.length - 1, prev + 1))
+          const newRightIndex = Math.min(stages.length - 1, currentStageIndex + 1)
+          setCurrentStageIndex(newRightIndex)
+          onStageChange?.(newRightIndex)
           break
         case 'enter':
         case ' ':
@@ -46,7 +65,7 @@ export default function StageGridMotion() {
 
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [currentStageIndex, router])
+  }, [currentStageIndex, router, onStageChange])
 
   // スクロール位置の更新
   useEffect(() => {
