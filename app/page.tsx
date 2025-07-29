@@ -17,7 +17,9 @@ import {
   Play,
   ArrowRight,
   Users,
-  Clock
+  Clock,
+  Flag,
+  Gamepad2
 } from 'lucide-react'
 
 const missions = [
@@ -76,9 +78,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-soft-yellow">
-      {/* Enhanced Hero Section */}
+      {/* Compact Hero Section */}
       <motion.div 
-        className="relative overflow-hidden bg-gradient-to-br from-green-400 via-green-500 to-green-600"
+        className="relative overflow-hidden bg-gradient-to-br from-green-400 via-green-500 to-green-600 p-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
@@ -90,20 +92,20 @@ export default function Home() {
           <div className="absolute bottom-0 left-1/4 w-16 h-16 bg-white rounded-full translate-y-8"></div>
         </div>
 
-        <div className="relative px-6 py-12 text-center">
+        <div className="relative px-4 py-6 text-center">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: 'spring' }}
-            className="mb-6"
+            className="mb-4"
           >
-            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BookOpen className="w-10 h-10 text-white" />
+            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Gamepad2 className="w-8 h-8 text-white" />
             </div>
           </motion.div>
           
           <motion.h1 
-            className="text-4xl font-bold text-white mb-4"
+            className="text-2xl font-bold text-white mb-2"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -112,83 +114,45 @@ export default function Home() {
           </motion.h1>
           
           <motion.p 
-            className="text-green-100 text-lg max-w-2xl mx-auto leading-relaxed"
+            className="text-green-100 text-sm max-w-md mx-auto"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6 }}
           >
             {copy.heroSubtitle}
           </motion.p>
-
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="mt-8"
-          >
-            <Button 
-              size="lg"
-              className="bg-white text-green-600 hover:bg-gray-100 font-semibold px-8 py-3"
-            >
-              <Play className="w-5 h-5 mr-2" />
-              学習を始める
-            </Button>
-          </motion.div>
         </div>
       </motion.div>
 
-      {/* Stats Section */}
-      <motion.div
-        className="px-6 py-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.0 }}
-      >
-        <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">3</div>
-            <div className="text-sm text-gray-600">ステージ</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">12</div>
-            <div className="text-sm text-gray-600">レッスン</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">50+</div>
-            <div className="text-sm text-gray-600">フレーズ</div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Enhanced Stage Grid */}
+      {/* Mario Style Stage Grid - Main Content */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="px-6 py-8"
+        className="py-4"
       >
         <motion.div 
-          className="text-center mb-8"
+          className="text-center mb-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+          transition={{ delay: 0.3 }}
         >
-          <div className="flex items-center justify-center mb-4">
-            <Star className="w-6 h-6 text-green-600 mr-2" />
-            <h2 className="text-2xl font-bold text-gray-800">学習ステージ</h2>
-            <Star className="w-6 h-6 text-green-600 ml-2" />
+          <div className="flex items-center justify-center mb-3">
+            <Flag className="w-6 h-6 text-green-600 mr-2" />
+            <h2 className="text-xl font-bold text-gray-800">学習ステージ</h2>
+            <Flag className="w-6 h-6 text-green-600 ml-2" />
           </div>
-          <p className="text-gray-600">段階的に英語力を向上させましょう</p>
+          <p className="text-gray-600 text-sm">マリオ風ワールドで英語を学ぼう！</p>
         </motion.div>
         
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-full mx-auto">
           <StageGridMotion />
         </div>
       </motion.div>
 
-      {/* Enhanced Mission Section */}
+      {/* Hidden Mission Section - Only show on demand */}
       <motion.div 
-        className="px-6 pb-20"
+        className="px-6 pb-20 hidden"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.4 }}
